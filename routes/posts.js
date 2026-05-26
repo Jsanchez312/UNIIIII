@@ -2,7 +2,7 @@ const express  = require('express');
 const router   = express.Router();
 const multer   = require('multer');
 const path     = require('path');
-const Post     = require('../models/Post');
+const Post     = require('../models/post');
 const protect  = require('../middleware/auth');
 const notifier = require('../services/telegram');
 
