@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mi Perfil | UniMercs</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #f8fafc;
+      --fg: #0f1720;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+      --accent: #fb923c;
+      --accent-hover: #ea580c;
+      --danger: #ef4444;
+      --font: 'Sora', system-ui, sans-serif;
+      --body-font: 'DM Sans', system-ui, sans-serif;
+      --container: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; padding: 0; }
+    body { font-family: var(--body-font); background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+    .container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+
+    /* HEADER */
+    .site-header { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { display: flex; gap: 16px; align-items: center; min-height: 72px; justify-content: space-between; }
+    .brand { font-family: var(--font); font-weight: 800; font-size: 22px; color: var(--fg); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: transform 0.2s; }
+    .brand:hover { transform: scale(1.03); }
+    .brand-logo { width: 32px; height: 32px; border-radius: 8px; }
+    .nav-desktop { display: flex; gap: 8px; align-items: center; }
+    .nav-link { text-decoration: none; color: #475569; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 15px; transition: all 0.2s; font-family: var(--font); }
+    .nav-link:hover { background: #f1f5f9; color: var(--primary); }
+    .nav-link.active { background: var(--primary-gradient); color: white; }
+    .icon-btn { background: #f1f5f9; border: 0; padding: 10px; border-radius: 8px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .icon-btn:hover { background: #e2e8f0; color: var(--primary); }
+    .icon-btn .icon { width: 22px; height: 22px; }
+    .hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .profile-dropdown { position: relative; }
+    .dropdown-menu { position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-width: 200px; padding: 8px 0; z-index: 100; border: 1px solid #e2e8f0; }
+    .dropdown-item { display: block; padding: 10px 16px; text-decoration: none; color: #475569; font-weight: 500; font-size: 14px; transition: background 0.2s; }
+    .dropdown-item:hover { background: #f8fafc; color: var(--fg); }
+
+    /* PROFILE HERO */
+    .profile-hero { background: var(--primary-gradient); padding: 0 0 0 0; position: relative; overflow: hidden; }
+    .profile-hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='20' cy='20' r='1.5'/%3E%3C/g%3E%3C/svg%3E"); }
+    .profile-cover { height: 180px; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .profile-cover-img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+    .profile-cover:hover .cover-overlay { opacity: 1; }
+    .cover-overlay span { color: white; font-family: var(--font); font-weight: 700; font-size: 14px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 8px; }
+    .cover-input { display: none; }
+
+    .profile-info-bar { background: white; border-bottom: 1px solid #e2e8f0; }
+    .profile-info-inner { display: flex; align-items: flex-end; gap: 20px; padding: 0 0 20px; position: relative; }
+    .profile-avatar-wrap { position: relative; margin-top: -48px; flex-shrink: 0; }
+    .profile-avatar { width: 96px; height: 96px; border-radius: 50%; border: 4px solid white; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-family: var(--font); font-size: 36px; font-weight: 800; color: white; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); cursor: pointer; position: relative; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-edit-btn { position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; background: var(--primary); border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .avatar-edit-btn svg { width: 14px; height: 14px; color: white; }
+    .avatar-input { display: none; }
+    .profile-details { flex: 1; }
+    .profile-name { font-family: var(--font); font-size: 24px; font-weight: 800; margin: 0 0 4px; }
+    .profile-email { color: var(--muted); font-size: 14px; }
+    .profile-uni { display: inline-block; background: #eff6ff; color: var(--primary); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 6px; font-family: var(--font); }
+    .profile-actions { display: flex; gap: 10px; align-items: center; }
+    .btn { border: 0; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); }
+    .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .btn-danger { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
+    .btn-danger:hover { background: #fee2e2; }
+
+    /* TABS */
+    .profile-tabs { display: flex; border-bottom: 2px solid #e2e8f0; margin-top: 24px; }
+    .tab-btn { font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--muted); padding: 12px 20px; cursor: pointer; background: transparent; border: 0; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+    .tab-btn:hover { color: var(--fg); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-panel { display: none; padding: 32px 0; }
+    .tab-panel.active { display: block; }
+
+    /* EDIT PROFILE FORM */
+    .profile-form { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .profile-form .full-width { grid-column: 1/-1; }
+    .form-group { margin-bottom: 0; }
+    .form-label { display: block; font-family: var(--font); font-weight: 600; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+    .form-input { width: 100%; border: 2px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; font-size: 15px; background: white; transition: all 0.2s; font-family: var(--body-font); color: var(--fg); }
+    .form-input:focus { outline: 0; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+    .form-input::placeholder { color: #94a3b8; }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-section-title { font-family: var(--font); font-size: 16px; font-weight: 700; margin: 0 0 20px; color: var(--fg); }
+    .form-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 28px; margin-bottom: 20px; }
+    .form-save-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+
+    /* COLOR PICKER */
+    .color-picker-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .color-swatch { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
+    .color-swatch.selected { border-color: var(--fg); transform: scale(1.15); }
+
+    /* STATS */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; padding: 20px; text-align: center; }
+    .stat-num { font-family: var(--font); font-size: 32px; font-weight: 800; color: var(--primary); display: block; }
+    .stat-label { font-size: 13px; color: var(--muted); font-weight: 500; display: block; margin-top: 4px; }
+
+    /* MY PRODUCTS */
+    .my-products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 18px; }
+    .product-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e2e8f0; transition: all 0.25s; position: relative; }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(15,23,32,0.1); }
+    .product-image-wrap { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
+    .product-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .product-card:hover .product-image { transform: scale(1.05); }
+    .product-content { padding: 16px; }
+    .product-category { font-size: 11px; color: #8b5cf6; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.8px; font-family: var(--font); }
+    .product-title { font-family: var(--font); font-size: 15px; font-weight: 700; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-price { font-family: var(--font); font-size: 18px; font-weight: 800; color: var(--primary); }
+    .product-card-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f5f9; }
+    .card-action-btn { flex: 1; padding: 7px; border-radius: 7px; border: 0; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: var(--font); }
+    .card-edit { background: #eff6ff; color: var(--primary); }
+    .card-edit:hover { background: #dbeafe; }
+    .card-delete { background: #fef2f2; color: var(--danger); }
+    .card-delete:hover { background: #fee2e2; }
+
+    /* MODAL */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+    .modal[hidden] { display: none; }
+    .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,32,0.45); backdrop-filter: blur(6px); }
+    .modal-content { position: relative; background: white; border-radius: 20px; width: 100%; max-width: 500px; padding: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.2); animation: scaleIn 0.3s; z-index: 1001; max-height: 90vh; overflow-y: auto; }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.92) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal-header h2 { margin: 0; font-family: var(--font); font-size: 20px; font-weight: 800; }
+    .btn-close { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; font-weight: bold; color: #64748b; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .btn-close:hover { background: #fee2e2; color: var(--danger); transform: rotate(90deg); }
+    .edit-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* EMPTY */
+    .empty-state { text-align: center; padding: 48px 20px; background: white; border-radius: 16px; border: 1px dashed #cbd5e1; }
+    .empty-state h3 { font-family: var(--font); font-size: 18px; margin: 12px 0 8px; }
+    .empty-state p { color: var(--muted); margin: 0 0 20px; }
+
+    /* TOAST */
+    .toast { position: fixed; right: 24px; bottom: 24px; background: #0f1720; color: white; font-weight: 500; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); opacity: 0; transform: translateY(20px); transition: all 0.3s; z-index: 2000; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* FOOTER */
+    .site-footer { background: #0f1720; color: white; padding: 40px 0 0; margin-top: 60px; }
+    .footer-brand-name { font-family: var(--font); font-size: 20px; font-weight: 800; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .footer-brand-logo { width: 28px; height: 28px; border-radius: 8px; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding: 18px 0; margin-top: 40px; }
+    .footer-copyright { color: #475569; font-size: 13px; }
+
+    /* NOT LOGGED */
+    .not-logged { text-align: center; padding: 80px 20px; }
+    .not-logged h2 { font-family: var(--font); font-size: 28px; margin-bottom: 16px; }
+    .not-logged p { color: var(--muted); margin-bottom: 32px; }
+
+    @media (max-width: 768px) {
+      .nav-desktop { display: none; }
+      .hamburger { display: block; }
+      .profile-form { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .my-products-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .my-products-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="https://raw.githubusercontent.com/puj-course/FIS_2610_3513_G6/main/assets/UnimercsLogo.png" alt="UNIMERCS" class="brand-logo" />
+        UniMercs
+      </a>
+      <nav class="nav-desktop">
+        <a href="index.html" class="nav-link">Inicio</a>
+        <a href="explore.html" class="nav-link">Explorar</a>
+        <a href="post.html" class="nav-link">Vender</a>
+        <a href="profile.html" class="nav-link active">Mi Perfil</a>
+      </nav>
+      <div class="header-actions">
+        <div class="profile-dropdown">
+          <button class="icon-btn" id="profile-btn">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="dropdown-menu" id="profile-dropdown-menu" hidden>
+            <div id="user-info" style="padding:10px 16px;border-bottom:1px solid #eee;font-family:'Sora',sans-serif;font-weight:700;color:#1e3a8a;display:none;font-size:14px;"></div>
+            <a href="profile.html" class="dropdown-item" id="profile-link" style="display:none;">Mi Perfil</a>
+            <a href="login.html" class="dropdown-item" id="login-link">Iniciar sesión</a>
+            <a href="register.html" class="dropdown-item" id="register-link">Regístrate</a>
+            <a href="#" class="dropdown-item" id="logout-btn" style="color:#dc2626;display:none;">Cerrar Sesión</a>
+          </div>
+        </div>
+        <button class="hamburger" id="mobile-toggle">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOT LOGGED IN -->
+  <div id="not-logged-view" class="not-logged container" hidden>
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z"/></svg>
+    <h2>Debes iniciar sesión</h2>
+    <p>Para ver tu perfil necesitas tener una cuenta y haber iniciado sesión.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="login.html" class="btn btn-primary">Iniciar sesión</a>
+      <a href="register.html" class="btn btn-secondary">Crear cuenta</a>
+    </div>
+  </div>
+
+  <!-- PROFILE VIEW -->
+  <div id="profile-view" hidden>
+    <!-- COVER + AVATAR -->
+    <div class="profile-hero">
+      <div class="profile-cover" id="cover-area">
+        <div style="position:relative;width:100%;height:100%;background:var(--primary-gradient);overflow:hidden;" id="cover-bg">
+          <img id="cover-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;" />
+        </div>
+        <div class="cover-overlay">
+          <span>📷 Cambiar portada</span>
+        </div>
+        <input type="file" id="cover-input" class="cover-input" accept="image/*">
+      </div>
+    </div>
+
+    <div class="profile-info-bar">
+      <div class="container">
+        <div class="profile-info-inner">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="avatar-el">
+              <img id="avatar-img" src="" alt="" style="display:none;" />
+              <span id="avatar-initials"></span>
+            </div>
+            <label class="avatar-edit-btn" for="avatar-input" title="Cambiar foto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </label>
+            <input type="file" id="avatar-input" class="avatar-input" accept="image/*">
+          </div>
+          <div class="profile-details">
+            <div class="profile-name" id="display-name"></div>
+            <div class="profile-email" id="display-email"></div>
+            <span class="profile-uni" id="display-uni" hidden></span>
+            <div id="display-bio" style="margin-top:6px;font-size:14px;color:var(--muted);max-width:500px;"></div>
+          </div>
+          <div class="profile-actions">
+            <a href="post.html" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Publicar
+            </a>
+            <button class="btn btn-secondary" id="edit-profile-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Editar perfil
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-tabs" role="tablist">
+          <button class="tab-btn active" data-tab="overview" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Resumen
+          </button>
+          <button class="tab-btn" data-tab="myproducts" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            Mis publicaciones
+          </button>
+          <button class="tab-btn" data-tab="settings" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Configuración
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- TAB: OVERVIEW -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-num" id="stat-posts">0</span>
+            <span class="stat-label">Publicaciones activas</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-joined">—</span>
+            <span class="stat-label">Miembro desde</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-phone">—</span>
+            <span class="stat-label">Teléfono registrado</span>
+          </div>
+        </div>
+        <div class="form-card">
+          <p class="form-section-title">Publicaciones recientes</p>
+          <div id="overview-products-grid" class="my-products-grid"></div>
+          <div id="overview-empty" class="empty-state" hidden>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <h3>Sin publicaciones</h3>
+            <p>Aún no has publicado nada.</p>
+            <a href="post.html" class="btn btn-primary">Publicar ahora</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: MY PRODUCTS -->
+      <div class="tab-panel" id="tab-myproducts">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+          <h2 style="font-family:var(--font);font-size:22px;font-weight:800;margin:0;">Mis publicaciones</h2>
+          <a href="post.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva publicación
+          </a>
+        </div>
+        <div id="my-products-grid" class="my-products-grid"></div>
+        <div id="my-products-empty" class="empty-state" hidden>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <h3>Sin publicaciones aún</h3>
+          <p>Empieza a vender hoy.</p>
+          <a href="post.html" class="btn btn-primary">Publicar producto</a>
+        </div>
+      </div>
+
+      <!-- TAB: SETTINGS -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="form-card">
+          <p class="form-section-title">Información personal</p>
+          <div class="profile-form">
+            <div class="form-group">
+              <label class="form-label" for="settings-name">Nombre completo</label>
+              <input type="text" id="settings-name" class="form-input" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settings-phone">Teléfono / WhatsApp</label>
+              <input type="tel" id="settings-phone" class="form-input" placeholder="3XX XXX XXXX">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settings-email">Correo electrónico</label>
+              <input type="email" id="settings-email" class="form-input" disabled style="opacity:0.6;cursor:not-allowed;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settings-uni">Universidad / Facultad</label>
+              <input type="text" id="settings-uni" class="form-input" placeholder="Ej. Facultad de Ingeniería">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label" for="settings-bio">Descripción corta</label>
+              <textarea id="settings-bio" class="form-input form-textarea" placeholder="Cuéntale a los compradores un poco sobre ti..."></textarea>
+            </div>
+          </div>
+          <div class="form-save-row">
+            <button class="btn btn-primary" id="save-profile-btn">Guardar cambios</button>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <p class="form-section-title">Color del perfil</p>
+          <p style="color:var(--muted);font-size:14px;margin:0 0 16px;">Personaliza el color de tu avatar e imagen de portada.</p>
+          <div class="color-picker-group" id="color-swatches">
+            <div class="color-swatch" data-color="linear-gradient(135deg,#2563eb,#7c3aed)" style="background:linear-gradient(135deg,#2563eb,#7c3aed);" title="Azul-Violeta"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#0891b2,#2563eb)" style="background:linear-gradient(135deg,#0891b2,#2563eb);" title="Cian-Azul"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#16a34a,#0891b2)" style="background:linear-gradient(135deg,#16a34a,#0891b2);" title="Verde-Cian"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#d97706,#dc2626)" style="background:linear-gradient(135deg,#d97706,#dc2626);" title="Naranja-Rojo"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#db2777,#7c3aed)" style="background:linear-gradient(135deg,#db2777,#7c3aed);" title="Rosa-Violeta"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#0f1720,#374151)" style="background:linear-gradient(135deg,#0f1720,#374151);" title="Negro"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#064e3b,#16a34a)" style="background:linear-gradient(135deg,#064e3b,#16a34a);" title="Verde Oscuro"></div>
+            <div class="color-swatch" data-color="linear-gradient(135deg,#b45309,#d97706)" style="background:linear-gradient(135deg,#b45309,#d97706);" title="Ámbar"></div>
+          </div>
+        </div>
+
+        <div class="form-card" style="border-color:#fecaca;">
+          <p class="form-section-title" style="color:var(--danger);">Zona de peligro</p>
+          <p style="color:var(--muted);font-size:14px;margin:0 0 16px;">Estas acciones son irreversibles. Procede con precaución.</p>
+          <button class="btn btn-danger" id="logout-danger-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <a href="index.html" class="footer-brand-name">
+        <img src="https://raw.githubusercontent.com/puj-course/FIS_2610_3513_G6/main/assets/UnimercsLogo.png" alt="UniMercs" class="footer-brand-logo" />
+        UniMercs
+      </a>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <span class="footer-copyright">© 2025 UniMercs — Todos los derechos reservados.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- EDIT PRODUCT MODAL -->
+  <div class="modal" id="edit-modal" hidden>
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Editar Publicación</h2>
+        <button class="btn-close" id="close-modal-btn">&times;</button>
+      </div>
+      <form id="edit-form" novalidate>
+        <input type="hidden" id="edit-id">
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label" for="edit-title">Título</label>
+          <input type="text" id="edit-title" class="form-input" required>
+        </div>
+        <div class="edit-form-grid" style="margin-bottom:16px;">
+          <div class="form-group">
+            <label class="form-label" for="edit-category">Categoría</label>
+            <select id="edit-category" class="form-input">
+              <option value="electronics">Electrónicos</option>
+              <option value="computers">Computadoras</option>
+              <option value="fashion">Moda</option>
+              <option value="home">Casa</option>
+              <option value="books">Libros</option>
+              <option value="games">Videojuegos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-state">Estado</label>
+            <select id="edit-state" class="form-input">
+              <option value="new">Nuevo</option>
+              <option value="barely used">Como nuevo</option>
+              <option value="used">Usado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="edit-price">Precio (COP)</label>
+          <input type="number" id="edit-price" class="form-input" required>
+        </div>
+        <div class="form-save-row">
+          <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script>
+    const API = 'http://localhost:5000';
+
+    class SessionManager {
+      static SESSION_KEY = 'unimercs_current_user';
+      static TOKEN_KEY   = 'unimercs_token';
+      destroySession()   { localStorage.removeItem(SessionManager.SESSION_KEY); localStorage.removeItem(SessionManager.TOKEN_KEY); }
+      getSession()       { const r = localStorage.getItem(SessionManager.SESSION_KEY); return r ? JSON.parse(r) : null; }
+      getToken()         { return localStorage.getItem(SessionManager.TOKEN_KEY); }
+      isAuthenticated()  { return this.getSession() !== null; }
+    }
+    class AuthFacade {
+      constructor()     { this._session = new SessionManager(); }
+      logout()          { this._session.destroySession(); }
+      getCurrentUser()  { return this._session.getSession(); }
+      getToken()        { return this._session.getToken(); }
+      isAuthenticated() { return this._session.isAuthenticated(); }
+    }
+
+    const auth = new AuthFacade();
+    const currentUser = auth.getCurrentUser();
+    const token = auth.getToken();
+    let allMyProducts = [];
+
+    const PROFILE_KEY = 'unimercs_profile_' + (currentUser?.id || '');
+
+    function loadProfileData() {
+      const saved = localStorage.getItem(PROFILE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    function saveProfileData(data) {
+      const existing = loadProfileData();
+      localStorage.setItem(PROFILE_KEY, JSON.stringify({ ...existing, ...data }));
+    }
+
+    // NAV
+    (function() {
+      const btn = document.getElementById('profile-btn');
+      const menu = document.getElementById('profile-dropdown-menu');
+      btn?.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; });
+      document.addEventListener('click', () => { if (menu) menu.hidden = true; });
+      if (auth.isAuthenticated() && currentUser) {
+        document.getElementById('user-info').textContent = currentUser.name;
+        document.getElementById('user-info').style.display = 'block';
+        document.getElementById('login-link').style.display = 'none';
+        document.getElementById('register-link').style.display = 'none';
+        document.getElementById('logout-btn').style.display = 'block';
+        const pl = document.getElementById('profile-link');
+        if (pl) pl.style.display = 'block';
+      }
+      document.getElementById('logout-btn')?.addEventListener('click', e => { e.preventDefault(); auth.logout(); window.location.href = 'login.html'; });
+    })();
+
+    // TOAST
+    const toastEl = document.getElementById('toast');
+    function showToast(msg) {
+      toastEl.textContent = msg; toastEl.hidden = false; toastEl.classList.add('show');
+      setTimeout(() => { toastEl.classList.remove('show'); setTimeout(() => toastEl.hidden = true, 300); }, 2500);
+    }
+
+    // UTILS
+    function formatPrice(n) { return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n); }
+    function getInitials(name='') { return name.trim().split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase(); }
+    function getConditionLabel(c) { return c==='new'?'Nuevo':c==='barely used'?'Como nuevo':'Usado'; }
+    function getCategoryLabel(c) { const m={electronics:'Electrónicos',computers:'Computadoras',fashion:'Moda',home:'Casa',books:'Libros',games:'Videojuegos'}; return m[c]||c; }
+
+    function init() {
+      if (!auth.isAuthenticated() || !currentUser) {
+        document.getElementById('not-logged-view').hidden = false;
+        return;
+      }
+      document.getElementById('profile-view').hidden = false;
+
+      const profile = loadProfileData();
+
+      // Display header info
+      const displayName = profile.name || currentUser.name;
+      const displayEmail = currentUser.email;
+      document.getElementById('display-name').textContent = displayName;
+      document.getElementById('display-email').textContent = displayEmail;
+
+      const uniEl = document.getElementById('display-uni');
+      if (profile.university) { uniEl.textContent = profile.university; uniEl.hidden = false; }
+
+      if (profile.bio) document.getElementById('display-bio').textContent = profile.bio;
+
+      // Avatar
+      if (profile.avatarImg) {
+        document.getElementById('avatar-img').src = profile.avatarImg;
+        document.getElementById('avatar-img').style.display = 'block';
+        document.getElementById('avatar-initials').style.display = 'none';
+      } else {
+        document.getElementById('avatar-initials').textContent = getInitials(displayName);
+      }
+
+      // Avatar color
+      if (profile.profileColor) {
+        document.getElementById('avatar-el').style.background = profile.profileColor;
+      }
+
+      // Cover
+      if (profile.coverImg) {
+        const img = document.getElementById('cover-img');
+        img.src = profile.coverImg;
+        img.style.display = 'block';
+      } else if (profile.profileColor) {
+        document.getElementById('cover-bg').style.background = profile.profileColor;
+      }
+
+      // Settings form
+      const phone = profile.phone || currentUser.phone || '';
+      document.getElementById('settings-name').value = displayName;
+      document.getElementById('settings-email').value = displayEmail;
+      document.getElementById('settings-phone').value = phone;
+      document.getElementById('settings-uni').value = profile.university || '';
+      document.getElementById('settings-bio').value = profile.bio || '';
+
+      // Joined stat
+      const joined = new Date(profile.joinedAt || Date.now());
+      document.getElementById('stat-joined').textContent = joined.toLocaleDateString('es-CO', {month:'short',year:'numeric'});
+
+      // Phone stat
+      document.getElementById('stat-phone').textContent = phone ? '✓' : '—';
+
+      // Color swatches
+      document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color === (profile.profileColor || 'linear-gradient(135deg,#2563eb,#7c3aed)'));
+        s.addEventListener('click', () => {
+          document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('selected'));
+          s.classList.add('selected');
+          const color = s.dataset.color;
+          document.getElementById('avatar-el').style.background = color;
+          document.getElementById('cover-bg').style.background = color;
+          saveProfileData({ profileColor: color });
+          showToast('Color actualizado');
+        });
+      });
+
+      loadMyProducts();
+    }
+
+    // AVATAR UPLOAD
+    document.getElementById('avatar-input').addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const src = e.target.result;
+        document.getElementById('avatar-img').src = src;
+        document.getElementById('avatar-img').style.display = 'block';
+        document.getElementById('avatar-initials').style.display = 'none';
+        saveProfileData({ avatarImg: src });
+        showToast('Foto de perfil actualizada');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // COVER UPLOAD
+    document.getElementById('cover-area').addEventListener('click', () => document.getElementById('cover-input').click());
+    document.getElementById('cover-input').addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const src = e.target.result;
+        const img = document.getElementById('cover-img');
+        img.src = src; img.style.display = 'block';
+        saveProfileData({ coverImg: src });
+        showToast('Portada actualizada');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // SAVE PROFILE
+    document.getElementById('save-profile-btn').addEventListener('click', async () => {
+      const name = document.getElementById('settings-name').value.trim();
+      const phone = document.getElementById('settings-phone').value.trim();
+      const university = document.getElementById('settings-uni').value.trim();
+      const bio = document.getElementById('settings-bio').value.trim();
+      if (!name) { showToast('El nombre no puede estar vacío'); return; }
+
+      // Save locally
+      saveProfileData({ name, phone, university, bio, joinedAt: loadProfileData().joinedAt || Date.now() });
+      document.getElementById('display-name').textContent = name;
+      const uniEl = document.getElementById('display-uni');
+      if (university) { uniEl.textContent = university; uniEl.hidden = false; } else { uniEl.hidden = true; }
+      document.getElementById('display-bio').textContent = bio;
+      document.getElementById('avatar-initials').textContent = getInitials(name);
+      document.getElementById('stat-phone').textContent = phone ? '✓' : '—';
+
+      // Persist phone to DB so it appears when others click your posts
+      if (phone && token) {
+        try {
+          const res = await fetch(`${API}/api/auth/profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ phone })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            localStorage.setItem('unimercs_token', data.token);
+            localStorage.setItem('unimercs_current_user', JSON.stringify(data.user));
+            showToast('Perfil guardado correctamente ✓');
+          } else {
+            showToast('Perfil guardado (error al sincronizar teléfono con el servidor)');
+          }
+        } catch {
+          showToast('Perfil guardado localmente (sin conexión al servidor)');
+        }
+      } else {
+        showToast('Perfil guardado correctamente ✓');
+      }
+    });
+
+    // LOGOUT DANGER
+    document.getElementById('logout-danger-btn').addEventListener('click', () => {
+      if (confirm('¿Cerrar sesión?')) { auth.logout(); window.location.href = 'login.html'; }
+    });
+
+    // TABS
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // EDIT PROFILE BTN -> go to settings tab
+    document.getElementById('edit-profile-btn').addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-tab="settings"]').classList.add('active');
+      document.getElementById('tab-settings').classList.add('active');
+    });
+
+    // PRODUCTS
+    async function loadMyProducts() {
+      try {
+        const res = await fetch(`${API}/api/posts`);
+        const all = await res.json();
+        allMyProducts = all.filter(p => currentUser && String(p.sellerId) === String(currentUser.id));
+        document.getElementById('stat-posts').textContent = allMyProducts.length;
+        renderMyProducts(allMyProducts, 'overview-products-grid', 'overview-empty', 3);
+        renderMyProducts(allMyProducts, 'my-products-grid', 'my-products-empty');
+      } catch {
+        showToast('Error al cargar publicaciones');
+      }
+    }
+
+    function renderMyProducts(products, gridId, emptyId, limit = null) {
+      const grid = document.getElementById(gridId);
+      const empty = document.getElementById(emptyId);
+      const shown = limit ? products.slice(0, limit) : products;
+      if (!shown.length) { grid.innerHTML = ''; empty.hidden = false; return; }
+      empty.hidden = true;
+      grid.innerHTML = '';
+      shown.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="product-image-wrap">
+            ${p.imageUrl ? `<img class="product-image" src="${API}${p.imageUrl}" alt="${p.title}" loading="lazy">` : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`}
+          </div>
+          <div class="product-content">
+            <div class="product-category">${getCategoryLabel(p.category)}</div>
+            <div class="product-title">${p.title}</div>
+            <div class="product-price">${formatPrice(p.price)}</div>
+            <div class="product-card-actions">
+              <button class="card-action-btn card-edit" data-id="${p._id}">✏️ Editar</button>
+              <button class="card-action-btn card-delete" data-id="${p._id}">🗑️ Eliminar</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      grid.querySelectorAll('.card-edit').forEach(btn => btn.addEventListener('click', () => openEditModal(btn.dataset.id)));
+      grid.querySelectorAll('.card-delete').forEach(btn => btn.addEventListener('click', () => confirmDelete(btn.dataset.id)));
+    }
+
+    // EDIT MODAL
+    const editModal = document.getElementById('edit-modal');
+    const editForm = document.getElementById('edit-form');
+    document.getElementById('close-modal-btn').addEventListener('click', () => { editModal.hidden = true; editForm.reset(); });
+    document.getElementById('cancel-edit-btn').addEventListener('click', () => { editModal.hidden = true; editForm.reset(); });
+    document.getElementById('modal-backdrop').addEventListener('click', () => { editModal.hidden = true; editForm.reset(); });
+
+    function openEditModal(id) {
+      const p = allMyProducts.find(p => String(p._id) === String(id));
+      if (!p) return;
+      document.getElementById('edit-id').value = p._id;
+      document.getElementById('edit-title').value = p.title || '';
+      document.getElementById('edit-price').value = p.price || '';
+      if (p.category) document.getElementById('edit-category').value = p.category;
+      if (p.condition) document.getElementById('edit-state').value = p.condition;
+      editModal.hidden = false;
+    }
+
+    editForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const title = document.getElementById('edit-title').value.trim();
+      const price = Number(document.getElementById('edit-price').value);
+      const category = document.getElementById('edit-category').value;
+      const condition = document.getElementById('edit-state').value;
+      if (!title || price <= 0) { showToast('Revisa los campos'); return; }
+      try {
+        const res = await fetch(`${API}/api/posts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ title, price, category, condition })
+        });
+        if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+        editModal.hidden = true; editForm.reset();
+        showToast('Cambios guardados ✓'); loadMyProducts();
+      } catch (err) { showToast('Error: ' + err.message); }
+    });
+
+    // DELETE
+    async function confirmDelete(id) {
+      if (!confirm('¿Eliminar esta publicación?')) return;
+      try {
+        const res = await fetch(`${API}/api/posts/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+        showToast('Eliminada.'); loadMyProducts();
+      } catch (err) { showToast('Error: ' + err.message); }
+    }
+
+    init();
+  </script>
+</body>
+</html>

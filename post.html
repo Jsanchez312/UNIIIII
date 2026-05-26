@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crear Publicación | UniMercs</title>
+  <meta name="description" content="Crear publicación — UniMercs" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    :root{
+      --bg: #ffffff;
+      --fg: #0f1720;
+      --muted: #6b7280;
+      --primary: linear-gradient(90deg,#2563eb,#7c3aed);
+      --accent: #fb923c;
+      --radius: 12px;
+      --container: 1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:#f8fafc;
+      color:var(--fg);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.45;
+    }
+
+    .container{ max-width:var(--container); margin:0 auto; padding:0 20px; }
+
+    .site-header{
+      position:sticky; top:0; z-index:60;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid #e6e9ef;
+    }
+    .header-inner{ display:flex; gap:16px; align-items:center; min-height:72px; justify-content:space-between; }
+    .brand{ font-weight:700; font-size:20px; color:var(--fg); text-decoration:none; transition:transform 0.2s; display:flex; align-items:center; gap:8px; }
+    .brand:hover{ transform:scale(1.05); }
+    .brand-logo{ width:24px; height:24px; border-radius:6px; }
+
+    .nav-desktop{ display:flex; gap:12px; align-items:center; }
+    .nav-link{ text-decoration:none; color:#374151; padding:8px 12px; border-radius:8px; font-weight:600; transition:all 0.2s; }
+    .nav-link:hover{ background:#f3f4f6; color:#1e3a8a; }
+    .nav-link.active{ background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; }
+
+    .search-desktop{ flex:1; margin:0 24px; }
+    .search-field{ display:flex; align-items:center; background:#fff; border-radius:10px; padding:8px; border:1px solid #e6e9ef; gap:8px; }
+    .search-field input{ border:0; outline:0; flex:1; padding:8px; font-size:14px; }
+    .search-field .icon{ width:18px; height:18px; color:#9aa4b2; }
+
+    .btn{ border:0; padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:600; transition:all 0.2s; text-decoration:none; display:inline-block; }
+    .btn-cta{ background:var(--accent); color:white; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; border:0; font-size:14px; }
+    .btn-primary{ background:linear-gradient(90deg,#2563eb,#7c3aed); color:#fff; }
+    .btn-primary:hover{ filter:brightness(1.1); transform:translateY(-1px); }
+
+    .header-actions{ display:flex; align-items:center; gap:8px; }
+
+    .icon-btn{
+      background:transparent; border:0; padding:8px; border-radius:8px;
+      cursor:pointer; color:#374151; display:flex; align-items:center; justify-content:center;
+    }
+    .icon-btn .icon{ width:20px; height:20px; }
+
+    .profile-dropdown{ position:relative; display:inline-block; }
+    .dropdown-menu{
+      position:absolute; top:100%; right:0; background:white; border-radius:10px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.1); min-width:180px; padding:8px 0;
+      margin-top:8px; z-index:100; border:1px solid #e6e9ef;
+    }
+    .dropdown-item{ display:block; padding:10px 16px; text-decoration:none; color:#374151; font-weight:500; font-size:14px; }
+    .dropdown-item:hover{ background:#f3f4f6; }
+
+    .hamburger{ display:none; background:transparent; border:0; padding:8px; cursor:pointer; }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    .mobile-menu{ background:#fff; border-top:1px solid #eef2f7; }
+    .mobile-search{ padding:12px 0; }
+    .mobile-nav{ display:flex; flex-direction:column; padding-bottom:12px; }
+    .mobile-link{ padding:12px 0; text-decoration:none; color:#374151; border-bottom:1px solid #f3f4f6; font-weight:600; font-size:14px; }
+    .mobile-link.active{ color:#2563eb; font-weight:700; }
+
+    main{ max-width:720px; margin:0 auto; padding:48px 20px; }
+
+    .page-header{ text-align:center; margin-bottom:40px; }
+    .page-header h1{
+      font-size:36px; margin:0 0 12px;
+      background:linear-gradient(90deg,#2563eb,#7c3aed);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .page-header p{ color:var(--muted); font-size:16px; margin:0; }
+
+    .sell-form{ background:white; border-radius:16px; padding:32px; box-shadow:0 4px 24px rgba(15,23,32,0.08); border:1px solid #e6e9ef; }
+
+    .form-group{ margin-bottom:24px; }
+    .form-label{ display:block; font-weight:600; font-size:14px; color:var(--fg); margin-bottom:8px; }
+
+    .form-input, .form-select{
+      width:100%; border:2px solid #e6e9ef; border-radius:10px;
+      padding:12px 16px; font-size:15px; transition:all 0.2s; font-family:inherit;
+    }
+    .form-input:focus, .form-select:focus{ outline:0; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+    .form-input::placeholder{ color:#9ca3af; }
+
+    .form-grid{ display:grid; grid-template-columns:1fr; gap:24px; }
+    @media(min-width:640px){ .form-grid{ grid-template-columns:1fr 1fr; } }
+
+    .file-input{ width:100%; padding:12px; border:2px dashed #d1d5db; border-radius:10px; cursor:pointer; transition:all 0.2s; background:#f9fafb; }
+    .file-input:hover{ border-color:#2563eb; background:#eff6ff; }
+
+    #image-preview{ margin-top:16px; display:flex; justify-content:center; }
+    #image-preview img{ max-width:100%; max-height:200px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); animation:fadeIn 0.3s; }
+
+    @keyframes fadeIn{ from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+
+    .error-message{ color:#dc2626; font-size:14px; margin-top:12px; padding:12px 16px; background:#fef2f2; border-radius:8px; border-left:3px solid #dc2626; display:none; }
+    .error-message.show{ display:block; animation:slideDown 0.3s; }
+
+    @keyframes slideDown{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+    .form-actions{ display:flex; align-items:center; justify-content:space-between; margin-top:32px; gap:16px; }
+
+    .btn-submit{
+      background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; border:0;
+      padding:14px 28px; border-radius:10px; font-weight:700; font-size:15px;
+      cursor:pointer; transition:all 0.2s; box-shadow:0 4px 12px rgba(37,99,235,0.3);
+    }
+    .btn-submit:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 6px 20px rgba(37,99,235,0.4); }
+    .btn-submit:disabled{ opacity:0.6; cursor:not-allowed; }
+    .btn-submit.loading{ position:relative; color:transparent; }
+    .btn-submit.loading::after{
+      content:''; position:absolute; width:20px; height:20px;
+      top:50%; left:50%; margin-left:-10px; margin-top:-10px;
+      border:3px solid rgba(255,255,255,0.3); border-radius:50%;
+      border-top-color:white; animation:spin 0.6s linear infinite;
+    }
+
+    @keyframes spin{ to{transform:rotate(360deg)} }
+
+    .btn-cancel{ color:#6b7280; text-decoration:none; font-size:14px; font-weight:600; transition:color 0.2s; }
+    .btn-cancel:hover{ color:#374151; text-decoration:underline; }
+
+    .toast{
+      position:fixed; right:20px; bottom:20px; background:#111827; color:white;
+      padding:16px 24px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.3);
+      opacity:0; transform:translateY(20px); transition:all 0.3s; z-index:1000;
+    }
+    .toast.show{ opacity:1; transform:translateY(0); }
+
+    .features-list{ background:linear-gradient(135deg,#eff6ff 0%,#f3f4f6 100%); border-radius:12px; padding:24px; margin-top:32px; }
+    .features-list h3{ font-size:18px; margin:0 0 16px; color:var(--fg); }
+    .features-list ul{ list-style:none; padding:0; margin:0; }
+    .features-list li{ padding:8px 0; color:var(--muted); font-size:14px; display:flex; align-items:center; gap:8px; }
+    .features-list li::before{ content:'✓'; display:inline-block; width:20px; height:20px; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; border-radius:50%; text-align:center; line-height:20px; font-weight:bold; font-size:12px; flex-shrink:0; }
+
+    .site-footer{ background:#0f1720; color:white; padding-top:48px; margin-top:64px; }
+    .footer-inner{ display:flex; gap:32px; align-items:flex-start; padding-bottom:32px; }
+    .footer-left{ flex:1; }
+    .footer-left h3{ margin:0 0 12px; font-size:20px; }
+    .footer-left p{ color:#cbd5e1; line-height:1.6; margin:0 0 16px; }
+    .footer-bottom{ border-top:1px solid rgba(255,255,255,0.08); padding:24px 0; }
+    .copyright{ color:#9ca3af; font-size:13px; text-align:center; }
+
+    @media(max-width:767px){
+      .nav-desktop{ display:none; }
+      .hamburger{ display:block; }
+      main{ padding:32px 16px; }
+      .page-header h1{ font-size:28px; }
+      .sell-form{ padding:24px 20px; }
+      .form-actions{ flex-direction:column-reverse; align-items:stretch; }
+      .btn-submit{ width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="https://raw.githubusercontent.com/puj-course/FIS_2610_3513_G6/main/assets/UnimercsLogo.png"
+             alt="UNIMERCS" class="brand-logo" />
+        UniMercs
+      </a>
+
+      <div class="search-desktop" role="search">
+        <label for="global-search" class="sr-only">Buscar...</label>
+        <div class="search-field">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="global-search" placeholder="Busca productos..." />
+          <button class="btn btn-cta" onclick="window.location.href='index.html'">Buscar</button>
+        </div>
+      </div>
+
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="index.html" class="nav-link">Inicio</a>
+        <a href="index.html" class="nav-link">Explorar</a>
+        <a href="post.html" class="nav-link active">Vender</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="profile-dropdown">
+          <button class="icon-btn" id="profile-btn" aria-label="Cuenta" title="Cuenta">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="dropdown-menu" id="profile-dropdown-menu" hidden>
+            <div id="user-info" style="padding:10px 16px;border-bottom:1px solid #eee;font-weight:bold;color:#1e3a8a;display:none;"></div>
+            <a href="login.html"    class="dropdown-item" id="login-link">Iniciar sesión</a>
+            <a href="register.html" class="dropdown-item" id="register-link">Regístrate</a>
+            <a href="#" class="dropdown-item" id="logout-btn" style="color:#dc2626;display:none;">Cerrar Sesión</a>
+          </div>
+        </div>
+
+        <button class="hamburger" id="mobile-toggle" aria-label="Abrir menú" aria-expanded="false">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <div class="container">
+        <nav class="mobile-nav" aria-label="Móvil">
+          <a href="index.html"    class="mobile-link">Inicio</a>
+          <a href="index.html"    class="mobile-link">Explorar</a>
+          <a href="post.html"     class="mobile-link active">Vender</a>
+          <a href="register.html" class="mobile-link" id="m-register">Registrar</a>
+          <a href="login.html"    class="mobile-link" id="m-login">Iniciar sesión</a>
+          <a href="#"             class="mobile-link" id="m-logout" style="display:none;color:#dc2626;">Cerrar sesión</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <h1>Crear Publicación</h1>
+      <p>Agrega tu producto y empieza tu camino en UniMercs</p>
+    </div>
+
+    <form id="sell-form" class="sell-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="product-title">Título del producto</label>
+        <input type="text" id="product-title" class="form-input"
+               placeholder="ej. iPhone 15 Pro Max" required />
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="product-category">Categoría</label>
+          <select id="product-category" class="form-select" required>
+            <option value="">Selecciona una categoría</option>
+            <option value="electronics">Electrónicos</option>
+            <option value="computers">Computadoras</option>
+            <option value="fashion">Moda</option>
+            <option value="home">Casa</option>
+            <option value="books">Libros</option>
+            <option value="games">Videojuegos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="product-state">Estado del producto</label>
+          <select id="product-state" class="form-select">
+            <option value="new">Nuevo</option>
+            <option value="barely used">Usado, como nuevo</option>
+            <option value="used">Usado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="product-price">Precio (COP)</label>
+        <input type="text" id="product-price" class="form-input"
+               placeholder="ej. 150000" inputmode="decimal" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="product-username">Nombre del vendedor</label>
+        <input type="text" id="product-username" class="form-input" readonly
+               style="background:#f1f5f9;cursor:default;" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="product-image">Imagen del producto</label>
+        <input type="file" id="product-image" class="file-input" accept="image/*" required />
+        <div id="image-preview"></div>
+      </div>
+
+      <div id="form-error" class="error-message" role="alert" aria-live="assertive"></div>
+
+      <div class="form-actions">
+        <a href="index.html" class="btn-cancel">Cancelar</a>
+        <button id="submit-btn" type="submit" class="btn-submit">Crear Publicación</button>
+      </div>
+    </form>
+
+    <div class="features-list">
+      <h3>💡 Consejos para una mejor publicación</h3>
+      <ul>
+        <li>Usa fotos claras y de buena calidad</li>
+        <li>Describe el estado real del producto</li>
+        <li>Establece un precio justo y competitivo</li>
+        <li>Responde rápido a los compradores interesados</li>
+        <li>Selecciona la categoría correcta para mejor visibilidad</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <h3>UniMercs</h3>
+        <p>Tu marketplace de confianza para comprar y vender productos de calidad dentro del Campus.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p class="copyright">© 2025 UniMercs. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" aria-live="polite" hidden></div>
+
+  <script>
+    /* ====================== PATRÓN OBSERVER ====================== */
+    class PostObserver { update(post) { throw new Error('Implementar update()'); } }
+    class PostEventBus {
+      constructor() { this._observers = []; }
+      subscribe(observer) {
+        if (!(observer instanceof PostObserver)) throw new TypeError('Debe implementar PostObserver');
+        this._observers.push(observer);
+      }
+      notify(post) { this._observers.forEach(o => o.update(post)); }
+    }
+    class ExploreUpdater extends PostObserver {
+      update(post) { console.log(`[ExploreUpdater] "${post.title}" publicado en el backend`); }
+    }
+    class NotificationObserver extends PostObserver {
+      update(post) {
+        const event = new CustomEvent('unimercs:new-post', { detail: post });
+        window.dispatchEvent(event);
+        console.log(`[NotificationObserver] Evento disparado para "${post.title}"`);
+      }
+    }
+    const postBus = new PostEventBus();
+    postBus.subscribe(new ExploreUpdater());
+    postBus.subscribe(new NotificationObserver());
+  </script>
+
+  <script>
+    /* ====================== PATRÓN PROTOTYPE ====================== */
+    class PostPrototype {
+      constructor({ title, category, price, username, state, imageDataUrl }) {
+        this.title = title;
+        this.category = category;
+        this.price = price;
+        this.username = username;
+        this.state = state;
+        this.imageDataUrl = imageDataUrl || '';
+      }
+      clone() {
+        return new PostPrototype({
+          title: this.title,
+          category: this.category,
+          price: this.price,
+          username: this.username,
+          state: this.state,
+          imageDataUrl: this.imageDataUrl
+        });
+      }
+      withNewId() {
+        const copy = this.clone();
+        copy.id = String(Date.now());
+        copy.createdAt = new Date().toISOString();
+        return copy;
+      }
+    }
+
+    /* ====================== PATRÓN DECORATOR ====================== */
+    class BasePost {
+      constructor(data) {
+        this.id = data.id;
+        this.title = data.title;
+        this.price = data.price;
+        this.category = data.category;
+        this.state = data.state;
+        this.username = data.username;
+        this.imageDataUrl = data.imageDataUrl;
+        this.createdAt = data.createdAt;
+      }
+      getData() {
+        return { ...this };
+      }
+    }
+
+    class PostDecorator {
+      constructor(post) {
+        this.post = post;
+      }
+      getData() {
+        return this.post.getData();
+      }
+    }
+
+    class TimestampDecorator extends PostDecorator {
+      getData() {
+        const data = this.post.getData();
+        data.createdAt = new Date().toISOString();
+        data.updatedAt = new Date().toISOString();
+        return data;
+      }
+    }
+
+    class SellerDecorator extends PostDecorator {
+      constructor(post, sellerEmail) {
+        super(post);
+        this.sellerEmail = sellerEmail;
+      }
+      getData() {
+        const data = this.post.getData();
+        data.seller = this.sellerEmail;
+        return data;
+      }
+    }
+  </script>
+
+  <script>
+    (function () {
+      const API = 'http://localhost:5000';
+
+      const token   = localStorage.getItem('unimercs_token');
+      const session = JSON.parse(localStorage.getItem('unimercs_current_user') || 'null');
+
+      if (!token || !session) {
+        alert('Debes iniciar sesión para crear una publicación');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const usernameInput = document.getElementById('product-username');
+        if (usernameInput && session) usernameInput.value = session.name;
+
+        const userInfoDiv  = document.getElementById('user-info');
+        const loginLink    = document.getElementById('login-link');
+        const registerLink = document.getElementById('register-link');
+        const logoutBtn    = document.getElementById('logout-btn');
+        const mLogout      = document.getElementById('m-logout');
+        const mLogin       = document.getElementById('m-login');
+        const mRegister    = document.getElementById('m-register');
+
+        if (session) {
+          userInfoDiv.textContent = `Hola, ${session.name}`;
+          userInfoDiv.style.display = 'block';
+          loginLink.style.display    = 'none';
+          registerLink.style.display = 'none';
+          logoutBtn.style.display    = 'block';
+          if (mLogout)   mLogout.style.display = 'block';
+          if (mLogin)    mLogin.style.display = 'none';
+          if (mRegister) mRegister.style.display = 'none';
+        }
+
+        logoutBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('unimercs_token');
+          localStorage.removeItem('unimercs_current_user');
+          window.location.href = 'index.html';
+        });
+        mLogout?.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('unimercs_token');
+          localStorage.removeItem('unimercs_current_user');
+          window.location.href = 'index.html';
+        });
+      });
+
+      const toast = document.getElementById('toast');
+      function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg; toast.hidden = false; toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.hidden = true, 300); }, 2500);
+      }
+
+      const imageEl   = document.getElementById('product-image');
+      const previewEl = document.getElementById('image-preview');
+      imageEl?.addEventListener('change', function () {
+        previewEl.innerHTML = '';
+        const file = imageEl.files && imageEl.files[0];
+        if (!file) return;
+        const img = document.createElement('img');
+        previewEl.appendChild(img);
+        const reader = new FileReader();
+        reader.onload = () => { img.src = reader.result; };
+        reader.readAsDataURL(file);
+      });
+
+      const sellForm    = document.getElementById('sell-form');
+      const titleEl     = document.getElementById('product-title');
+      const categoryEl  = document.getElementById('product-category');
+      const stateEl     = document.getElementById('product-state');
+      const priceEl     = document.getElementById('product-price');
+      const errorEl     = document.getElementById('form-error');
+      const submitBtn   = document.getElementById('submit-btn');
+
+      function showError(msg) { errorEl.textContent = msg; errorEl.classList.add('show'); errorEl.style.display = 'block'; }
+      function hideError()    { errorEl.classList.remove('show'); errorEl.style.display = 'none'; }
+
+      sellForm?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        hideError();
+
+        const title    = titleEl.value.trim();
+        const category = categoryEl.value;
+        const state    = stateEl.value;
+        const priceRaw = priceEl.value.trim();
+        const priceNum = Number(priceRaw.replace(/[^0-9.]/g, ''));
+        const file     = imageEl.files && imageEl.files[0];
+
+        if (!title)                         { showError('Por favor ingresa un título para tu producto'); return; }
+        if (!category)                      { showError('Por favor selecciona una categoría'); return; }
+        if (!priceRaw || isNaN(priceNum) || priceNum <= 0) { showError('Por favor ingresa un precio válido'); return; }
+        if (!file)                          { showError('Por favor sube una imagen de tu producto'); return; }
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+
+        try {
+          /* === PROTOTYPE + DECORATOR === */
+          const proto = new PostPrototype({
+            title,
+            category,
+            price: priceNum,
+            username: session.name,
+            state
+          });
+          let post = proto.withNewId();
+
+          const basePost = new BasePost(post);
+          const withTimestamp = new TimestampDecorator(basePost);
+          const finalPost = new SellerDecorator(withTimestamp, session.email);
+
+          const postData = finalPost.getData();
+
+          const formData = new FormData();
+          formData.append('title', title);
+          formData.append('category', category);
+          formData.append('condition', state);
+          formData.append('price', priceNum);
+          formData.append('image', file);
+
+          const res  = await fetch(`${API}/api/posts`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+          });
+          const data = await res.json();
+
+          if (!res.ok) throw new Error(data.message || 'Error al crear la publicación');
+
+          postBus.notify({ ...data, ...postData });
+
+          showToast('✓ Publicación creada exitosamente!');
+          submitBtn.textContent = '✓ ¡Publicado!';
+          submitBtn.style.background = 'linear-gradient(90deg,#10b981,#059669)';
+
+          setTimeout(() => {
+            showToast('Redirigiendo al inicio...');
+            setTimeout(() => window.location.href = 'index.html', 800);
+          }, 1500);
+
+        } catch (err) {
+          console.error(err);
+          showError(err.message || 'Error al crear la publicación. Por favor intenta de nuevo.');
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('loading');
+          submitBtn.textContent = 'Crear Publicación';
+        }
+      });
+
+      const profileBtn  = document.getElementById('profile-btn');
+      const profileMenu = document.getElementById('profile-dropdown-menu');
+      profileBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (profileMenu.hasAttribute('hidden')) profileMenu.removeAttribute('hidden');
+        else profileMenu.setAttribute('hidden', '');
+      });
+      document.addEventListener('click', (e) => {
+        if (profileMenu && !profileMenu.contains(e.target) && !profileBtn.contains(e.target))
+          profileMenu.setAttribute('hidden', '');
+      });
+
+      const mobileToggle = document.getElementById('mobile-toggle');
+      const mobileMenu   = document.getElementById('mobile-menu');
+      mobileToggle?.addEventListener('click', function () {
+        const exp = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!exp));
+        if (mobileMenu.hasAttribute('hidden')) mobileMenu.removeAttribute('hidden');
+        else mobileMenu.setAttribute('hidden', '');
+      });
+    })();
+  </script>
+</body>
+</html>

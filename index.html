@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inicio | UniMercs</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #f8fafc;
+      --fg: #0f1720;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+      --accent: #fb923c;
+      --accent-hover: #ea580c;
+      --danger: #ef4444;
+      --radius: 12px;
+      --card: #ffffff;
+      --card-shadow: 0 10px 25px rgba(15, 23, 32, 0.08);
+      --hover-shadow: 0 20px 40px rgba(15, 23, 32, 0.12);
+      --container: 1200px;
+      --font: 'Sora', system-ui, sans-serif;
+      --body-font: 'DM Sans', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; padding: 0; }
+    body { font-family: var(--body-font); background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+    .container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+
+    /* HEADER */
+    .site-header { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { display: flex; gap: 16px; align-items: center; min-height: 72px; justify-content: space-between; }
+    .brand { font-family: var(--font); font-weight: 800; font-size: 22px; color: var(--fg); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: transform 0.2s; }
+    .brand:hover { transform: scale(1.03); }
+    .brand-logo { width: 32px; height: 32px; border-radius: 8px; }
+    .nav-desktop { display: flex; gap: 8px; align-items: center; }
+    .nav-link { text-decoration: none; color: #475569; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 15px; transition: all 0.2s; font-family: var(--font); }
+    .nav-link:hover { background: #f1f5f9; color: var(--primary); }
+    .nav-link.active { background: var(--primary-gradient); color: white; box-shadow: 0 4px 10px rgba(37,99,235,0.2); }
+    .search-desktop { flex: 1; max-width: 500px; margin: 0 32px; }
+    .search-field { display: flex; align-items: center; background: white; border-radius: 10px; padding: 6px; border: 2px solid #e2e8f0; transition: border-color 0.2s, box-shadow 0.2s; }
+    .search-field:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+    .search-field input { border: 0; outline: 0; flex: 1; padding: 8px 12px; font-size: 14px; background: transparent; font-family: var(--body-font); }
+    .search-field .icon { width: 18px; height: 18px; color: #94a3b8; margin-left: 10px; }
+    .btn { border: 0; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); }
+    .btn-cta { background: var(--accent); color: white; }
+    .btn-cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+    .btn-primary:hover { box-shadow: 0 6px 16px rgba(37,99,235,0.4); transform: translateY(-2px); }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .icon-btn { position: relative; background: #f1f5f9; border: 0; padding: 10px; border-radius: 8px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .icon-btn:hover { background: #e2e8f0; color: var(--primary); }
+    .icon-btn .icon { width: 22px; height: 22px; }
+    .hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .profile-dropdown { position: relative; }
+    .dropdown-menu { position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-width: 200px; padding: 8px 0; z-index: 100; border: 1px solid #e2e8f0; transform-origin: top right; animation: scaleIn 0.2s cubic-bezier(0.16,1,0.3,1); }
+    .dropdown-item { display: block; padding: 10px 16px; text-decoration: none; color: #475569; font-weight: 500; font-size: 14px; transition: background 0.2s; }
+    .dropdown-item:hover { background: #f8fafc; color: var(--fg); }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95) translateY(-5px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    /* HERO */
+    .hero { background: var(--primary-gradient); color: white; padding: 80px 0; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .hero-inner { position: relative; z-index: 1; max-width: 700px; }
+    .hero-tag { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; font-family: var(--font); margin-bottom: 20px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .hero h1 { font-family: var(--font); font-size: clamp(32px,5vw,52px); font-weight: 800; margin: 0 0 16px; line-height: 1.15; }
+    .hero p { font-size: 18px; opacity: 0.9; margin: 0 0 32px; max-width: 540px; }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-hero-primary { background: white; color: #2563eb; font-weight: 700; padding: 14px 28px; border-radius: 10px; border: 0; cursor: pointer; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: var(--font); box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.2); }
+    .btn-hero-secondary { background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); color: white; font-weight: 700; padding: 14px 28px; border-radius: 10px; cursor: pointer; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: var(--font); }
+    .btn-hero-secondary:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+    .hero-stats { display: flex; gap: 40px; margin-top: 48px; flex-wrap: wrap; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-family: var(--font); font-size: 32px; font-weight: 800; display: block; }
+    .hero-stat-label { font-size: 13px; opacity: 0.8; display: block; margin-top: 2px; }
+
+    /* MAIN */
+    .explore-main { padding: 48px 0; }
+    .section-title { font-family: var(--font); font-size: 28px; font-weight: 800; margin: 0 0 24px; color: var(--fg); }
+    .filters-container { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .category-filters { display: flex; gap: 10px; overflow-x: auto; padding: 4px; scrollbar-width: none; flex-wrap: wrap; }
+    .category-filters::-webkit-scrollbar { display: none; }
+    .cat-btn { background: white; border: 1.5px solid #e2e8f0; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 13px; color: #64748b; cursor: pointer; white-space: nowrap; transition: all 0.25s; font-family: var(--font); }
+    .cat-btn:hover { border-color: #cbd5e1; color: var(--fg); }
+    .cat-btn.active { background: var(--fg); color: white; border-color: var(--fg); box-shadow: 0 4px 12px rgba(15,23,32,0.15); transform: translateY(-1px); }
+    .results-info { font-size: 14px; color: var(--muted); font-weight: 500; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* PRODUCT CARDS */
+    .product-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; position: relative; cursor: pointer; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--hover-shadow); border-color: #cbd5e1; }
+    .product-image-wrap { position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
+    .product-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .product-card:hover .product-image { transform: scale(1.05); }
+    .badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; font-family: var(--font); }
+    .product-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+    .product-category { font-size: 11px; color: #8b5cf6; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.8px; font-family: var(--font); }
+    .product-title { font-family: var(--font); font-size: 17px; font-weight: 700; color: var(--fg); margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-price { font-family: var(--font); font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: auto; }
+    .product-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 13px; color: var(--muted); padding-top: 16px; border-top: 1px solid #f1f5f9; }
+    .product-seller { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+    .avatar-mini { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #7c3aed); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: white; font-weight: 700; font-family: var(--font); flex-shrink: 0; }
+    .contact-hint { position: absolute; bottom: 0; left: 0; right: 0; background: var(--primary-gradient); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; font-family: var(--font); transform: translateY(100%); transition: transform 0.3s ease; }
+    .product-card:not(.own-card):hover .contact-hint { transform: translateY(0); }
+    .owner-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; z-index: 10; opacity: 0; transform: translateY(-5px); transition: all 0.3s ease; }
+    .product-card:hover .owner-actions { opacity: 1; transform: translateY(0); }
+    .action-btn { background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border: none; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s; }
+    .action-btn:hover { transform: scale(1.1); }
+    .action-edit { color: var(--primary); }
+    .action-delete { color: var(--danger); }
+    .action-btn svg { width: 18px; height: 18px; }
+
+    /* SKELETON */
+    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .skeleton-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
+    .skeleton-img { width: 100%; aspect-ratio: 4/3; background: linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    .skeleton-body { padding: 20px; }
+    .skeleton-line { height: 14px; background: linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; margin-bottom: 10px; }
+    .skeleton-line.short { width: 60%; }
+    .skeleton-line.price { height: 22px; width: 40%; margin-top: 4px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 64px 20px; background: white; border-radius: 16px; border: 1px dashed #cbd5e1; margin-top: 24px; }
+    .empty-icon { width: 48px; height: 48px; color: #94a3b8; margin-bottom: 16px; }
+    .empty-state h3 { font-family: var(--font); font-size: 20px; margin: 0 0 8px; color: var(--fg); }
+    .empty-state p { color: var(--muted); margin: 0 0 24px; }
+
+    /* CONTACT MODAL */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+    .modal[hidden] { display: none; }
+    .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,32,0.45); backdrop-filter: blur(6px); animation: fadeIn 0.2s ease; }
+    .modal-content { position: relative; background: white; border-radius: 24px; width: 100%; max-width: 420px; padding: 36px; box-shadow: 0 25px 60px rgba(0,0,0,0.2); animation: scaleIn 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 1001; }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.92) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+    .modal-header h2 { margin: 0; font-family: var(--font); font-size: 22px; font-weight: 800; color: var(--fg); }
+    .btn-close { background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: bold; color: #64748b; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .btn-close:hover { background: #fee2e2; color: var(--danger); transform: rotate(90deg); }
+    .contact-modal-seller { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #f1f5f9; }
+    .contact-modal-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-family: var(--font); font-size: 20px; font-weight: 700; color: white; flex-shrink: 0; }
+    .contact-modal-seller-info strong { font-family: var(--font); font-size: 17px; font-weight: 700; display: block; color: var(--fg); }
+    .contact-modal-seller-info span { font-size: 13px; color: var(--muted); }
+    .contact-modal-product { background: #f8fafc; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+    .contact-modal-product-title { font-family: var(--font); font-weight: 700; font-size: 15px; color: var(--fg); margin-bottom: 4px; }
+    .contact-modal-product-price { font-family: var(--font); font-weight: 800; font-size: 20px; color: var(--primary); }
+    .phone-display { background: linear-gradient(135deg, #eff6ff, #f0fdf4); border: 2px solid #bfdbfe; border-radius: 14px; padding: 20px 24px; text-align: center; }
+    .phone-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; font-family: var(--font); }
+    .phone-number { font-family: var(--font); font-size: 28px; font-weight: 800; color: var(--fg); letter-spacing: 2px; }
+    .phone-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-call { flex: 1; background: #16a34a; color: white; border: 0; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; text-decoration: none; font-family: var(--font); }
+    .btn-call:hover { background: #15803d; transform: translateY(-1px); }
+    .btn-whatsapp { flex: 1; background: #25d366; color: white; border: 0; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; text-decoration: none; font-family: var(--font); }
+    .btn-whatsapp:hover { background: #1da851; transform: translateY(-1px); }
+
+    /* EDIT MODAL */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-weight: 600; font-size: 14px; color: var(--fg); margin-bottom: 8px; font-family: var(--font); }
+    .form-input { width: 100%; border: 2px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; font-size: 15px; background: #f8fafc; transition: all 0.2s; font-family: var(--body-font); }
+    .form-input:focus { outline: 0; border-color: #3b82f6; background: white; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; }
+
+    /* TOAST */
+    .toast { position: fixed; right: 24px; bottom: 24px; background: #0f1720; color: white; font-weight: 500; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 2000; font-family: var(--body-font); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* FOOTER */
+    .site-footer { background: #0f1720; color: white; padding: 0; margin-top: 80px; }
+    .footer-top { padding: 60px 0 48px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+    .footer-brand { }
+    .footer-brand-name { font-family: var(--font); font-size: 24px; font-weight: 800; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .footer-brand-logo { width: 32px; height: 32px; border-radius: 8px; }
+    .footer-brand-desc { color: #94a3b8; font-size: 14px; line-height: 1.6; max-width: 280px; }
+    .footer-social { display: flex; gap: 10px; margin-top: 20px; }
+    .social-btn { width: 38px; height: 38px; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #94a3b8; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+    .social-btn:hover { background: rgba(255,255,255,0.15); color: white; transform: translateY(-2px); }
+    .footer-col-title { font-family: var(--font); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; margin-bottom: 16px; }
+    .footer-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { color: #94a3b8; text-decoration: none; font-size: 14px; transition: color 0.2s; }
+    .footer-links a:hover { color: white; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding: 20px 0; }
+    .footer-bottom-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copyright { color: #475569; font-size: 13px; }
+    .footer-badge { display: flex; align-items: center; gap: 8px; }
+    .footer-badge-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #64748b; font-weight: 600; font-family: var(--font); }
+
+    @media (max-width: 900px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 768px) {
+      .nav-desktop { display: none; }
+      .hamburger { display: block; }
+      .search-desktop { display: none; }
+      .hero { padding: 56px 0; }
+      .hero-stats { gap: 24px; }
+      .owner-actions { opacity: 1; transform: translateY(0); }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-brand { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="https://raw.githubusercontent.com/puj-course/FIS_2610_3513_G6/main/assets/UnimercsLogo.png" alt="UNIMERCS" class="brand-logo" />
+        UniMercs
+      </a>
+      <div class="search-desktop" role="search">
+        <label for="global-search" class="sr-only">Buscar por título...</label>
+        <div class="search-field">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="global-search" placeholder="Busca productos por título..." />
+          <button class="btn btn-cta" id="search-desktop-btn">Buscar</button>
+        </div>
+      </div>
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="index.html" class="nav-link active">Inicio</a>
+        <a href="explore.html" class="nav-link">Explorar</a>
+        <a href="post.html" class="nav-link">Vender</a>
+      </nav>
+      <div class="header-actions">
+        <div class="profile-dropdown">
+          <button class="icon-btn" id="profile-btn" aria-label="Cuenta" title="Cuenta">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="dropdown-menu" id="profile-dropdown-menu" hidden>
+            <div id="user-info" style="padding:10px 16px;border-bottom:1px solid #eee;font-family:'Sora',sans-serif;font-weight:700;color:#1e3a8a;display:none;font-size:14px;"></div>
+            <a href="profile.html" class="dropdown-item" id="profile-link" style="display:none;">Mi Perfil</a>
+            <a href="login.html" class="dropdown-item" id="login-link">Iniciar sesión</a>
+            <a href="register.html" class="dropdown-item" id="register-link">Regístrate</a>
+            <a href="#" class="dropdown-item" id="logout-btn" style="color:#dc2626;display:none;">Cerrar Sesión</a>
+          </div>
+        </div>
+        <button class="hamburger" id="mobile-toggle" aria-label="Abrir menú" aria-expanded="false">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="hero-tag">🎓 Exclusivo Javeriana</span>
+        <h1>Compra y vende entre compañeros</h1>
+        <p>El marketplace universitario donde encontrarás todo lo que necesitas a precios justos, de personas que conoces.</p>
+        <div class="hero-ctas">
+          <a href="explore.html" class="btn-hero-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Explorar productos
+          </a>
+          <a href="post.html" class="btn-hero-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Publicar algo
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num" id="stat-products">—</span>
+            <span class="hero-stat-label">Productos activos</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num" id="stat-categories">7</span>
+            <span class="hero-stat-label">Categorías</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">100%</span>
+            <span class="hero-stat-label">Universitario</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="explore-main">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+        <h2 class="section-title" style="margin:0;">Publicaciones recientes</h2>
+        <a href="explore.html" style="color:var(--primary);font-weight:600;font-size:14px;text-decoration:none;display:flex;align-items:center;gap:4px;">Ver todo →</a>
+      </div>
+
+      <div class="filters-container">
+        <div class="category-filters" id="category-filters">
+          <button class="cat-btn active" data-category="all">Todos</button>
+          <button class="cat-btn" data-category="electronics">Electrónicos</button>
+          <button class="cat-btn" data-category="computers">Computadoras</button>
+          <button class="cat-btn" data-category="fashion">Moda</button>
+          <button class="cat-btn" data-category="home">Casa</button>
+          <button class="cat-btn" data-category="books">Libros</button>
+          <button class="cat-btn" data-category="games">Videojuegos</button>
+        </div>
+        <div class="results-info" aria-live="polite">
+          <span id="results-count">0</span> resultados
+        </div>
+      </div>
+
+      <div class="products-grid" id="products-grid"></div>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <h3>No se encontraron productos</h3>
+        <p>Intenta con otros términos o categorías.</p>
+        <button class="btn btn-secondary" id="clear-filters-btn">Limpiar filtros</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="footer-brand-name">
+              <img src="https://raw.githubusercontent.com/puj-course/FIS_2610_3513_G6/main/assets/UnimercsLogo.png" alt="UniMercs" class="footer-brand-logo" />
+              UniMercs
+            </a>
+            <p class="footer-brand-desc">El marketplace universitario de la Javeriana. Compra, vende e intercambia con confianza dentro de tu comunidad académica.</p>
+            <div class="footer-social">
+              <a href="#" class="social-btn" aria-label="Instagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              </a>
+              <a href="#" class="social-btn" aria-label="Twitter">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+              </a>
+              <a href="#" class="social-btn" aria-label="LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+            </div>
+          </div>
+          <div>
+            <p class="footer-col-title">Marketplace</p>
+            <ul class="footer-links">
+              <li><a href="explore.html">Explorar productos</a></li>
+              <li><a href="post.html">Publicar artículo</a></li>
+              <li><a href="profile.html">Mi perfil</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="footer-col-title">Categorías</p>
+            <ul class="footer-links">
+              <li><a href="explore.html?cat=electronics">Electrónicos</a></li>
+              <li><a href="explore.html?cat=computers">Computadoras</a></li>
+              <li><a href="explore.html?cat=books">Libros</a></li>
+              <li><a href="explore.html?cat=fashion">Moda</a></li>
+              <li><a href="explore.html?cat=games">Videojuegos</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="footer-col-title">Soporte</p>
+            <ul class="footer-links">
+              <li><a href="#">Preguntas frecuentes</a></li>
+              <li><a href="#">Términos y condiciones</a></li>
+              <li><a href="#">Política de privacidad</a></li>
+              <li><a href="#">Contacto</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <span class="footer-copyright">© 2025 UniMercs — Todos los derechos reservados.</span>
+          <div class="footer-badge">
+            <span class="footer-badge-item">🎓 Comunidad Javeriana</span>
+            <span class="footer-badge-item">🔒 Transacciones seguras</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CONTACT MODAL -->
+  <div class="modal" id="contact-modal" hidden role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="contact-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Contactar vendedor</h2>
+        <button class="btn-close" id="close-contact-btn" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="contact-modal-seller">
+        <div class="contact-modal-avatar" id="contact-avatar"></div>
+        <div class="contact-modal-seller-info">
+          <strong id="contact-seller-name"></strong>
+          <span id="contact-seller-email"></span>
+        </div>
+      </div>
+      <div class="contact-modal-product">
+        <div class="contact-modal-product-title" id="contact-product-title"></div>
+        <div class="contact-modal-product-price" id="contact-product-price"></div>
+      </div>
+      <div class="phone-display">
+        <div class="phone-label">📱 Número de contacto</div>
+        <div class="phone-number" id="contact-phone"></div>
+        <div class="phone-actions">
+          <a href="#" class="btn-call" id="btn-call">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.11a2 2 0 0 1 1.95-2.16H6.6a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.5a16 16 0 0 0 6 6l.93-.93a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 15.92z"/></svg>
+            Llamar
+          </a>
+          <a href="#" class="btn-whatsapp" id="btn-whatsapp" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="modal" id="edit-modal" hidden role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Editar Publicación</h2>
+        <button class="btn-close" id="close-modal-btn" aria-label="Cerrar">&times;</button>
+      </div>
+      <form id="edit-form" novalidate>
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label class="form-label" for="edit-title">Título del producto</label>
+          <input type="text" id="edit-title" class="form-input" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="edit-category">Categoría</label>
+            <select id="edit-category" class="form-input" required>
+              <option value="electronics">Electrónicos</option>
+              <option value="computers">Computadoras</option>
+              <option value="fashion">Moda</option>
+              <option value="home">Casa</option>
+              <option value="books">Libros</option>
+              <option value="games">Videojuegos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-state">Estado</label>
+            <select id="edit-state" class="form-input" required>
+              <option value="new">Nuevo</option>
+              <option value="barely used">Usado, como nuevo</option>
+              <option value="used">Usado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-price">Precio (COP)</label>
+          <input type="number" id="edit-price" class="form-input" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="save-edit-btn">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite" hidden></div>
+
+  <script>
+    const API = 'http://localhost:5000';
+
+    class SessionManager {
+      static SESSION_KEY = 'unimercs_current_user';
+      static TOKEN_KEY   = 'unimercs_token';
+      destroySession()   { localStorage.removeItem(SessionManager.SESSION_KEY); localStorage.removeItem(SessionManager.TOKEN_KEY); }
+      getSession()       { const r = localStorage.getItem(SessionManager.SESSION_KEY); return r ? JSON.parse(r) : null; }
+      getToken()         { return localStorage.getItem(SessionManager.TOKEN_KEY); }
+      isAuthenticated()  { return this.getSession() !== null; }
+    }
+    class AuthFacade {
+      constructor()     { this._session = new SessionManager(); }
+      logout()          { this._session.destroySession(); }
+      getCurrentUser()  { return this._session.getSession(); }
+      getToken()        { return this._session.getToken(); }
+      isAuthenticated() { return this._session.isAuthenticated(); }
+    }
+
+    const auth = new AuthFacade();
+    let allProducts = [], activeCategory = 'all', searchTerm = '', searchTimeout;
+    const token = auth.getToken();
+    const currentUser = auth.getCurrentUser();
+
+    // NAV / DROPDOWN
+    (function setupNav() {
+      const profileBtn = document.getElementById('profile-btn');
+      const dropdownMenu = document.getElementById('profile-dropdown-menu');
+      profileBtn?.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.hidden = !dropdownMenu.hidden; });
+      document.addEventListener('click', () => { if (dropdownMenu) dropdownMenu.hidden = true; });
+
+      const userInfoEl = document.getElementById('user-info');
+      const loginLink = document.getElementById('login-link');
+      const registerLink = document.getElementById('register-link');
+      const logoutBtn = document.getElementById('logout-btn');
+      const profileLink = document.getElementById('profile-link');
+
+      if (auth.isAuthenticated() && currentUser) {
+        userInfoEl.textContent = currentUser.name;
+        userInfoEl.style.display = 'block';
+        loginLink.style.display = 'none';
+        registerLink.style.display = 'none';
+        logoutBtn.style.display = 'block';
+        if (profileLink) profileLink.style.display = 'block';
+      }
+      logoutBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        auth.logout();
+        window.location.href = 'login.html';
+      });
+    })();
+
+    // TOAST
+    const toastEl = document.getElementById('toast');
+    function showToast(msg) {
+      if (!toastEl) return;
+      toastEl.textContent = msg; toastEl.hidden = false; toastEl.classList.add('show');
+      setTimeout(() => { toastEl.classList.remove('show'); setTimeout(() => toastEl.hidden = true, 300); }, 2500);
+    }
+
+    // UTILITIES
+    function formatPrice(n) { return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n); }
+    function getInitials(name='') { return name.trim().split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase(); }
+    function getConditionLabel(c) { return c==='new'?'Nuevo':c==='barely used'?'Como nuevo':'Usado'; }
+    function getCategoryLabel(c) { const m={electronics:'Electrónicos',computers:'Computadoras',fashion:'Moda',home:'Casa',books:'Libros',games:'Videojuegos'}; return m[c]||c; }
+    function getNoImageSVG() {
+      return `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+    }
+
+    // FILTERS
+    function applyFilters() {
+      let filtered = allProducts;
+      if (activeCategory && activeCategory !== 'all') filtered = filtered.filter(p => p.category === activeCategory);
+      if (searchTerm) { const t = searchTerm.toLowerCase(); filtered = filtered.filter(p => (p.title||'').toLowerCase().includes(t) || (p.sellerName||'').toLowerCase().includes(t)); }
+      renderProducts(filtered);
+    }
+
+    // RENDER
+    function renderSkeletons() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = '<div class="skeleton-grid">' + Array(6).fill(`<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>`).join('') + '</div>';
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('products-grid');
+      const empty = document.getElementById('empty-state');
+      document.getElementById('results-count').textContent = products.length;
+      if (!products.length) { grid.innerHTML = ''; empty.hidden = false; return; }
+      empty.hidden = true;
+      grid.innerHTML = '';
+      products.forEach(product => {
+        const isOwn = currentUser && (String(product.sellerId) === String(currentUser.id));
+        const card = document.createElement('div');
+        card.className = 'product-card' + (isOwn ? ' own-card' : '');
+        card.dataset.id = product._id;
+        card.innerHTML = `
+          <div class="product-image-wrap">
+            ${product.imageUrl ? `<img class="product-image" src="${API}${product.imageUrl}" alt="${product.title}" loading="lazy" onerror="this.parentElement.innerHTML='${getNoImageSVG()}'">` : getNoImageSVG()}
+            <span class="badge">${getConditionLabel(product.condition)}</span>
+            ${isOwn ? `<div class="owner-actions">
+              <button class="action-btn action-edit" data-id="${product._id}" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              <button class="action-btn action-delete" data-id="${product._id}" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+            </div>` : ''}
+          </div>
+          <div class="product-content">
+            <div class="product-category">${getCategoryLabel(product.category)}</div>
+            <div class="product-title">${product.title}</div>
+            <div class="product-price">${formatPrice(product.price)}</div>
+            <div class="product-meta">
+              <span class="product-seller"><span class="avatar-mini">${getInitials(product.sellerName)}</span>${product.sellerName}</span>
+              <span>${getConditionLabel(product.condition)}</span>
+            </div>
+          </div>
+          ${!isOwn ? `<div class="contact-hint">📱 Ver contacto del vendedor</div>` : ''}
+        `;
+        grid.appendChild(card);
+      });
+      attachCardEvents(products);
+    }
+
+    function attachCardEvents(products) {
+      document.querySelectorAll('.action-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); confirmDelete(btn.dataset.id); });
+      });
+      document.querySelectorAll('.action-edit').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openEditModal(btn.dataset.id); });
+      });
+      document.querySelectorAll('.product-card:not(.own-card)').forEach(card => {
+        card.addEventListener('click', () => {
+          const product = products.find(p => String(p._id) === String(card.dataset.id));
+          if (product) openContactModal(product);
+        });
+      });
+    }
+
+    // CONTACT MODAL
+    function openContactModal(product) {
+      if (!auth.isAuthenticated()) { showToast('Inicia sesión para ver el contacto del vendedor'); return; }
+      document.getElementById('contact-avatar').textContent = getInitials(product.sellerName);
+      document.getElementById('contact-seller-name').textContent = product.sellerName;
+      document.getElementById('contact-seller-email').textContent = product.sellerEmail || '';
+      document.getElementById('contact-product-title').textContent = product.title;
+      document.getElementById('contact-product-price').textContent = formatPrice(product.price);
+
+      // Get phone from stored user data or product
+      const phone = product.sellerPhone || 'No disponible';
+      document.getElementById('contact-phone').textContent = phone !== 'No disponible' ? phone : '—';
+
+      if (phone && phone !== 'No disponible') {
+        let cleanPhone = phone.replace(/\D/g, '');
+        if (cleanPhone.startsWith('57') && cleanPhone.length > 10) {
+          // Ya contiene el prefijo de país 57
+        } else {
+          cleanPhone = '57' + cleanPhone;
+        }
+        document.getElementById('btn-call').href = `tel:+${cleanPhone}`;
+        document.getElementById('btn-whatsapp').href = `https://wa.me/${cleanPhone}?text=Hola, vi tu publicación "${product.title}" en UniMercs y me interesa.`;
+      } else {
+        document.getElementById('btn-call').href = '#';
+        document.getElementById('btn-whatsapp').href = '#';
+      }
+
+      document.getElementById('contact-modal').hidden = false;
+    }
+
+    document.getElementById('close-contact-btn')?.addEventListener('click', () => document.getElementById('contact-modal').hidden = true);
+    document.getElementById('contact-backdrop')?.addEventListener('click', () => document.getElementById('contact-modal').hidden = true);
+
+    // LOAD
+    async function loadProducts() {
+      renderSkeletons();
+      try {
+        const res = await fetch(`${API}/api/posts`);
+        allProducts = await res.json();
+        if (allProducts.length) document.getElementById('stat-products').textContent = allProducts.length + '+';
+        applyFilters();
+      } catch {
+        document.getElementById('products-grid').innerHTML = '';
+        document.getElementById('empty-state').hidden = false;
+        showToast('Error al cargar los productos.');
+      }
+    }
+
+    // DELETE
+    async function confirmDelete(id) {
+      if (!confirm('¿Seguro que deseas eliminar esta publicación?')) return;
+      try {
+        const res = await fetch(`${API}/api/posts/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+        showToast('Publicación eliminada.'); loadProducts();
+      } catch (err) { showToast('Error: ' + err.message); }
+    }
+
+    // EDIT MODAL
+    const editModal = document.getElementById('edit-modal');
+    const editForm  = document.getElementById('edit-form');
+    document.getElementById('close-modal-btn')?.addEventListener('click', () => { editModal.hidden = true; editForm.reset(); });
+    document.getElementById('cancel-edit-btn')?.addEventListener('click', () => { editModal.hidden = true; editForm.reset(); });
+    document.getElementById('modal-backdrop')?.addEventListener('click', () => { editModal.hidden = true; editForm.reset(); });
+
+    function openEditModal(id) {
+      const p = allProducts.find(p => String(p._id) === String(id));
+      if (!p) return;
+      document.getElementById('edit-id').value = p._id;
+      document.getElementById('edit-title').value = p.title || '';
+      document.getElementById('edit-price').value = p.price || '';
+      if (p.category) document.getElementById('edit-category').value = p.category;
+      if (p.condition) document.getElementById('edit-state').value = p.condition;
+      editModal.hidden = false;
+    }
+
+    editForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const title = document.getElementById('edit-title').value.trim();
+      const price = Number(document.getElementById('edit-price').value);
+      const category = document.getElementById('edit-category').value;
+      const condition = document.getElementById('edit-state').value;
+      if (!title || price <= 0) { showToast('Revisa los campos'); return; }
+      try {
+        const res = await fetch(`${API}/api/posts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ title, price, category, condition })
+        });
+        if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+        editModal.hidden = true; editForm.reset();
+        showToast('Cambios guardados.'); loadProducts();
+      } catch (err) { showToast('Error: ' + err.message); }
+    });
+
+    // SEARCH & FILTERS
+    const searchInput = document.getElementById('global-search');
+    searchInput?.addEventListener('input', () => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { searchTerm = searchInput.value.trim(); applyFilters(); }, 400); });
+    document.getElementById('search-desktop-btn')?.addEventListener('click', () => { searchTerm = searchInput.value.trim(); applyFilters(); });
+    const catBtns = document.querySelectorAll('.cat-btn');
+    document.getElementById('category-filters')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('cat-btn')) {
+        catBtns.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        activeCategory = e.target.dataset.category;
+        applyFilters();
+      }
+    });
+    document.getElementById('clear-filters-btn')?.addEventListener('click', () => {
+      searchTerm = ''; if (searchInput) searchInput.value = ''; activeCategory = 'all';
+      catBtns.forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-category="all"]')?.classList.add('active');
+      applyFilters();
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
